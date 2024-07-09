@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Recoil Calculator</string>
+    <string name="calculate">Calcular retroceso</string>
+    <string name="logo_description">Logotipo de la calculadora de retroceso</string>
+    <string name="bullet_diameter_input">Diámetro de la bala (pulgadas)</string>
+    <string name="powder_weight_in_grains">Peso del polvo (granos)</string>
+    <string name="bullet_weight_in_grains">Peso de la bala (granos)</string>
+    <string name="bullet_diameter_in_inches">Diámetro de la bala (pulgadas)</string>
+    <string name="barrel_twist_in_revolutions_per_inch">Giro del barril (Rev por pulgada)</string>
+    <string name="rifle_weight_in_pounds">Peso del rifle (libras): %s</string>
+    <string name="rifle_velocity_fps">Velocidad del rifle (fps): %s</string>
+    <string name="bullet_angular_velocity_rpm">Velocidad angular de la bala (RPM): %s</string>
+    <string name="bullet_linear_muzzle_energy_ft_lbs">Energía de boca lineal de bala (pies-libras): %s</string>
+    <string name="bullet_velocity_fps">Velocidad de bala (fps)</string>
+    <string name="rifle_recoil_energy_ft_lbs">Energía de retroceso del rifle (pies-libras): %s</string>
+    <string name="bullet_spin_energy_ft_lbs">Energía de giro de la bala (pies-libras): %s</string>
+</resources>
