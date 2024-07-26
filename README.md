@@ -7,7 +7,7 @@ displayed on the right side of the screen (darker gray boxes).
 
 
 ## Screenshot
-![ScreenShot_v1.png](https://github.com/kenwalger/Recoil-Calculator/blob/master/app/src/main/res/drawable/app_screen_shot_v1.png)
+![ScreenShot_v1.png](https://github.com/kenwalger/Recoil-Calculator/blob/master/app/src/main/res/drawable/app_screen_shot_colors.png)
 
 
 #### Based on the DOS and Java Script Recoil Calculators from [Varmint Al's Shooting Page](https://www.varmintal.com/ashot.htm#Calculate_Recoil)
