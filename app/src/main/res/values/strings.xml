@@ -4,7 +4,7 @@
     <string name="bullet_weight_in_grains">Bullet Weight (grains)</string>
     <string name="bullet_diameter_in_inches">Bullet Diameter (inches)</string>
     <string name="barrel_twist_in_revolutions_per_inch">Barrel Twist (Rev per inch)</string>
-    <string name="rifle_weight_in_pounds">Rifle Weight (lbs): %s</string>
+    <string name="rifle_weight_in_pounds">Rifle Weight (lbs):</string>
     <string name="rifle_velocity_fps">Rifle Velocity (fps): %s</string>
     <string name="bullet_angular_velocity_rpm">Bullet Angular Velocity (RPM): %s</string>
     <string name="bullet_linear_muzzle_energy_ft_lbs">Bullet Linear Muzzle Energy (ft-lbs): %s</string>

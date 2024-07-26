@@ -1,8 +1,8 @@
 package com.kenwalger.recoilcalculator
 
+import android.annotation.SuppressLint
 import android.icu.text.DecimalFormat
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,10 +36,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kenwalger.recoilcalculator.ui.theme.Comfortable
+import com.kenwalger.recoilcalculator.ui.theme.Enjoyable
+import com.kenwalger.recoilcalculator.ui.theme.Medic
+import com.kenwalger.recoilcalculator.ui.theme.Purple80
+import com.kenwalger.recoilcalculator.ui.theme.RatherNot
 import com.kenwalger.recoilcalculator.ui.theme.RecoilCalculatorTheme
+import com.kenwalger.recoilcalculator.ui.theme.Uncomfortable
 import kotlin.math.pow
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -48,10 +55,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center))
-                { innerPadding ->
-                    GetInput(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                {
+                    Column(modifier = Modifier, horizontalAlignment = Alignment.Start) {
+                        GetInput(modifier = Modifier)
+                    }
                 }
             }
         }
@@ -100,141 +107,180 @@ fun GetInput(modifier: Modifier = Modifier) {
         calBulletSpinEnergy(bulletDiameter, bulletWeight, bulletVelocity, barrelTwist)
     val df = DecimalFormat("###,###.##")
 
+    val comfortColor: Color = if (recoilEnergy > 49.999999999) {
+        Medic
+    } else if (recoilEnergy > 29.999999999) {
+        RatherNot
+    } else if (recoilEnergy > 19.999999999) {
+        Uncomfortable
+    } else if (recoilEnergy > 9.999999999) {
+        Comfortable
+    } else if (recoilEnergy > 0) {
+        Enjoyable
+    } else {
+        Purple80
+    }
+
+
 
     HeaderImage(modifier)
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(modifier = modifier.fillMaxWidth().padding(5.dp)) {
-            Box(modifier = modifier.width(200.dp)) {
-                TextField(
-                    value = rifleWeightInput,
-                    textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                    onValueChange = { rifleWeightInput = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(stringResource(R.string.rifle_weight_in_pounds)) }
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Box(modifier = modifier.width(200.dp).background(color = Color.Gray)) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    fontSize = 12.sp,
-                    text = stringResource(
-                        R.string.rifle_recoil_energy_ft_lbs,
-                        df.format(recoilEnergy)
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Row(modifier = modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
+                Box(modifier = modifier.width(200.dp)) {
+                    TextField(
+                        value = rifleWeightInput,
+                        textStyle = TextStyle.Default.copy(fontSize = 14.sp),
+                        onValueChange = { rifleWeightInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.rifle_weight_in_pounds)) }
                     )
-                )
-            }
-        }
-        Row(modifier = modifier.fillMaxWidth().padding(5.dp)) {
-            Box(modifier = modifier.width(200.dp)) {
-                TextField(
-                    value = barrelTwistInput,
-                    textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                    onValueChange = { barrelTwistInput = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(stringResource(R.string.barrel_twist_in_revolutions_per_inch)) }
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Box(modifier = modifier.width(200.dp).background(color = Color.Gray)) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    fontSize = 12.sp,
-                    text = stringResource(R.string.rifle_velocity_fps, df.format(rifleVelocity))
-                )
-            }
-        }
-        Row(modifier = modifier.fillMaxWidth().padding(5.dp)) {
-            Box(modifier = modifier.width(200.dp)) {
-                TextField(
-                    value = bulletDiameterInput,
-                    textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                    onValueChange = { bulletDiameterInput = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(stringResource(R.string.bullet_diameter_in_inches)) }
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Box(modifier = modifier.width(200.dp).background(color = Color.Gray)) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    fontSize = 12.sp,
-                    text = stringResource(
-                        R.string.bullet_angular_velocity_rpm,
-                        df.format(bulletAngularVelocity)
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(modifier = Modifier
+                    .width(200.dp)
+                    .background(color = comfortColor)) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = 12.sp,
+                        text = stringResource(
+                            R.string.rifle_recoil_energy_ft_lbs,
+                            df.format(recoilEnergy)
+                        )
                     )
-                )
+                }
             }
-        }
-        Row(modifier = modifier.fillMaxWidth().padding(5.dp)) {
-            Box(modifier = modifier.width(200.dp)) {
-                TextField(
-                    value = bulletVelocityInput,
-                    textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                    onValueChange = { bulletVelocityInput = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(stringResource(R.string.bullet_velocity_fps)) }
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Box(modifier = modifier.width(200.dp).background(color = Color.Gray)) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    fontSize = 12.sp,
-                    text = stringResource(
-                        R.string.bullet_linear_muzzle_energy_ft_lbs,
-                        df.format(bulletLinearMuzzleEnergy)
+            Row(modifier = modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
+                Box(modifier = modifier.width(200.dp)) {
+                    TextField(
+                        value = barrelTwistInput,
+                        textStyle = TextStyle.Default.copy(fontSize = 14.sp),
+                        onValueChange = { barrelTwistInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.barrel_twist_in_revolutions_per_inch)) }
                     )
-                )
-            }
-        }
-        Row(modifier = modifier.fillMaxWidth().padding(5.dp)) {
-            Box(modifier = modifier.width(200.dp)) {
-                TextField(
-                    value = bulletWeightInput,
-                    textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                    onValueChange = { bulletWeightInput = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(stringResource(R.string.bullet_weight_in_grains)) }
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Box(modifier = modifier.width(200.dp).background(color = Color.Gray)) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    fontSize = 12.sp,
-                    text = stringResource(
-                        R.string.bullet_spin_energy_ft_lbs,
-                        df.format(bulletSpinEnergy)
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(modifier = modifier
+                    .width(200.dp)
+                    .background(color = Color.Gray)) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = 12.sp,
+                        text = stringResource(R.string.rifle_velocity_fps, df.format(rifleVelocity))
                     )
-                )
+                }
             }
-        }
-        Row(modifier = modifier.fillMaxWidth().padding(5.dp)) {
-            Box(modifier = modifier.width(200.dp)) {
-                TextField(
-                    value = powderWeightInput,
-                    textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                    onValueChange = { powderWeightInput = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(stringResource(R.string.powder_weight_in_grains)) }
-                )
+            Row(modifier = modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
+                Box(modifier = modifier.width(200.dp)) {
+                    TextField(
+                        value = bulletDiameterInput,
+                        textStyle = TextStyle.Default.copy(fontSize = 14.sp),
+                        onValueChange = { bulletDiameterInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.bullet_diameter_in_inches)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(modifier = modifier
+                    .width(200.dp)
+                    .background(color = Color.Gray)) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = 12.sp,
+                        text = stringResource(
+                            R.string.bullet_angular_velocity_rpm,
+                            df.format(bulletAngularVelocity)
+                        )
+                    )
+                }
             }
-            Spacer(modifier = Modifier.width(10.dp))
-            Box(modifier = modifier.width(200.dp).background(color = Color.Transparent)) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    fontSize = 12.sp,
-                    text = " "
-                )
+            Row(modifier = modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
+                Box(modifier = modifier.width(200.dp)) {
+                    TextField(
+                        value = bulletVelocityInput,
+                        textStyle = TextStyle.Default.copy(fontSize = 14.sp),
+                        onValueChange = { bulletVelocityInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.bullet_velocity_fps)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(modifier = modifier
+                    .width(200.dp)
+                    .background(color = Color.Gray)) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = 12.sp,
+                        text = stringResource(
+                            R.string.bullet_linear_muzzle_energy_ft_lbs,
+                            df.format(bulletLinearMuzzleEnergy)
+                        )
+                    )
+                }
+            }
+            Row(modifier = modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
+                Box(modifier = modifier.width(200.dp)) {
+                    TextField(
+                        value = bulletWeightInput,
+                        textStyle = TextStyle.Default.copy(fontSize = 14.sp),
+                        onValueChange = { bulletWeightInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.bullet_weight_in_grains)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(modifier = modifier
+                    .width(200.dp)
+                    .background(color = Color.Gray)) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = 12.sp,
+                        text = stringResource(
+                            R.string.bullet_spin_energy_ft_lbs,
+                            df.format(bulletSpinEnergy)
+                        )
+                    )
+                }
+            }
+            Row(modifier = modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
+                Box(modifier = modifier.width(200.dp)) {
+                    TextField(
+                        value = powderWeightInput,
+                        textStyle = TextStyle.Default.copy(fontSize = 14.sp),
+                        onValueChange = { powderWeightInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.powder_weight_in_grains)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(modifier = modifier
+                    .width(200.dp)
+                    .background(color = Color.Transparent)) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = 12.sp,
+                        text = " "
+                    )
+                }
             }
         }
     }
-}
-
 
 @Preview(showBackground = true)
 @Composable
@@ -265,9 +311,11 @@ fun calRecoilEnergy(rifleWeightPounds: Double,
     val velocityOfGas = 4700
     val rifleMass = rifleWeightPounds / gravityForce
 
-    val recoilEnergy = .5 * (bulletMass * bulletVelocity + powderMass * velocityOfGas).pow(2) / rifleMass
+    val recoilEnergy =
+        .5 * (bulletMass * bulletVelocity + powderMass * velocityOfGas).pow(2) / rifleMass
 
-    return recoilEnergy }
+    return recoilEnergy
+}
 
 // Rifle Velocity Calculation (fps)
 fun calRifleVelocity(rifleWeightPounds: Double,
@@ -295,8 +343,6 @@ fun calBulletAngularVelocity(twistRate: Int, velocity: Int): Double {
     val twist: Double= (1 / twistRate.toDouble())                                                                           // rev/inch
     val bulletVelocityInchesPerSecond = velocity * 12                                                            // in/sec
     val bulletAngularVelocity = bulletVelocityInchesPerSecond * twist * 2 * pi                                   // radians/sec
-
-    Log.d("BAV", bulletAngularVelocity.toString())
 
     return bulletAngularVelocity
 
@@ -328,3 +374,4 @@ fun calBulletSpinEnergy(diameter: Double, mass: Int, velocity: Int, twist: Int):
 
     return bulletSpinEnergy
 }
+
