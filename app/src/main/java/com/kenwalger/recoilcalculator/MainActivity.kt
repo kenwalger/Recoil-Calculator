@@ -170,7 +170,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Box(modifier = modifier
                     .width(200.dp)
-                    .background(color = Color.Gray)) {
+                    .background(color = Color.LightGray)) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         fontSize = 12.sp,
@@ -193,7 +193,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Box(modifier = modifier
                     .width(200.dp)
-                    .background(color = Color.Gray)) {
+                    .background(color = Color.LightGray)) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         fontSize = 12.sp,
@@ -219,7 +219,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Box(modifier = modifier
                     .width(200.dp)
-                    .background(color = Color.Gray)) {
+                    .background(color = Color.LightGray)) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         fontSize = 12.sp,
@@ -245,7 +245,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Box(modifier = modifier
                     .width(200.dp)
-                    .background(color = Color.Gray)) {
+                    .background(color = Color.LightGray)) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         fontSize = 12.sp,
