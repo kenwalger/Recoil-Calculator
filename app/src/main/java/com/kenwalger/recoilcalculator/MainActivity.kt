@@ -52,7 +52,6 @@ import com.kenwalger.recoilcalculator.ui.theme.Purple80
 import com.kenwalger.recoilcalculator.ui.theme.RatherNot
 import com.kenwalger.recoilcalculator.ui.theme.RecoilCalculatorTheme
 import com.kenwalger.recoilcalculator.ui.theme.Uncomfortable
-import kotlin.math.pow
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -148,11 +147,9 @@ fun GetInput(modifier: Modifier = Modifier) {
         }
     }
 
-
-
     HeaderImage(modifier)
         Column(
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -321,6 +318,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                         .height(25.dp)
                         .width(50.dp)
                         .background(color = Enjoyable))
+                Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Enjoyable")
             }
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -329,6 +327,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                         .height(25.dp)
                         .width(50.dp)
                         .background(color = Comfortable))
+                Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Comfortable")
             }
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -337,6 +336,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                         .height(25.dp)
                         .width(50.dp)
                         .background(color = Uncomfortable))
+                Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Uncomfortable")
             }
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -345,6 +345,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                         .height(25.dp)
                         .width(50.dp)
                         .background(color = RatherNot))
+                Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("I'd Rather Not")
             }
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -353,6 +354,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                         .height(25.dp)
                         .width(50.dp)
                         .background(color = Medic))
+                Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Call a Medic!")
             }
         }
@@ -451,83 +453,7 @@ fun GetInputPreview(modifier: Modifier = Modifier) {
 @Composable
 fun HeaderImage(modifier: Modifier = Modifier) {
     val headerImage = painterResource(R.drawable.bg_compose_recoil_calculator_logo_small)
-    Image(painter = headerImage, contentDescription = null)
+    Image(modifier = modifier, painter = headerImage, contentDescription = null)
 
-}
-
-// Rifle Recoil Energy Calculation (ft-lb)
-// RECOIL = .5 * (BulletMass * Bullet Velocity + Mass of Powder * Velocity of Gas) ^2 / Rifle Mass
-fun calRecoilEnergy(rifleWeightPounds: Double,
-                    bulletWeightGrains: Int,
-                    powderWeightGrains: Double,
-                    bulletVelocity: Int) : Double {
-    val gravityForce = 32.16
-    val bulletMass = bulletWeightGrains / (7000 * gravityForce)
-    val powderMass = powderWeightGrains / (7000 * gravityForce)
-    val velocityOfGas = 4700
-    val rifleMass = rifleWeightPounds / gravityForce
-
-    val recoilEnergy =
-        .5 * (bulletMass * bulletVelocity + powderMass * velocityOfGas).pow(2) / rifleMass
-
-    return recoilEnergy
-}
-
-// Rifle Velocity Calculation (fps)
-fun calRifleVelocity(rifleWeightPounds: Double,
-                     bulletWeightGrains: Int,
-                     powderWeightGrains: Double,
-                     bulletVelocity: Int): Double {
-    val gravityForce = 32.16                                                                                       // 32.16 lbm*ft/(lbf*sec^2)
-    val rifleMass = rifleWeightPounds / gravityForce                                                               // Lbm
-    val bulletMass = bulletWeightGrains / (7000 * gravityForce)                                                    // Lbm
-    val powderMass = powderWeightGrains / (7000 * gravityForce)                                                    // Lbm
-    val velocityOfGas = 4700                                                                            // fps
-
-    val rifleVelocity = (bulletMass * bulletVelocity + powderMass * velocityOfGas) / rifleMass
-
-    return rifleVelocity
-}
-
-// Bullet Angular Velocity (Radians per second)
-// VIN = bulletVelocity * 12
-// TWIST = 1 / barrel twist
-// Angular Velocity = VIN * TWIST * 2 * PI
-fun calBulletAngularVelocity(twistRate: Int, velocity: Int): Double {
-    val pi = 3.14159265
-
-    val twist: Double= (1 / twistRate.toDouble())                                                                           // rev/inch
-    val bulletVelocityInchesPerSecond = velocity * 12                                                            // in/sec
-    val bulletAngularVelocity = bulletVelocityInchesPerSecond * twist * 2 * pi                                   // radians/sec
-
-    return bulletAngularVelocity
-
-}
-
-// Bullet Linear Muzzle Energy Calculation (ft-lb)
-// KE = .5 * BM * VIN ^ 2 / 12:     REM Bullet linear energy (ft-lb)
-fun calBulletLinearMuzzleEnergy(bulletWeightGrains: Int, velocity: Int ): Double {
-    val gravityForce = 386                                                                                  // Gravity 386 (lbm-in)/(lbf-sec^2)
-
-    val bulletMass: Double = (bulletWeightGrains / (7000 * gravityForce.toDouble()))                                                      // lbm
-    val bulletVelocityInchesPerSecond = velocity * 12                                                            // in/sec
-    val bulletLinearMuzzleEnergy = .5 * bulletMass * (bulletVelocityInchesPerSecond * bulletVelocityInchesPerSecond) / 12       // ft-lb
-
-    return bulletLinearMuzzleEnergy
-}
-
-// Bullet Spin Energy Calculation (ft-lb)
-// Bullet Angular Energy (Spin Energy) = .5 * BulletMassMOI * Bullet Angular Velocity^2 / 12
-fun calBulletSpinEnergy(diameter: Double, mass: Int, velocity: Int, twist: Int): Double {
-    val gravityForce = 386
-    val radius = diameter / 2
-    val bulletMass = mass / (7000 * gravityForce.toDouble())
-    val bulletMassMOI = .5 * bulletMass * radius.pow(2)
-
-    val bulletAngularEnergy = calBulletAngularVelocity(twist, velocity)
-
-    val bulletSpinEnergy = (.5 * bulletMassMOI * bulletAngularEnergy.pow(2)) / 12
-
-    return bulletSpinEnergy
 }
 
