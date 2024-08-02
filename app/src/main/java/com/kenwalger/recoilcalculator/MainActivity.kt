@@ -48,7 +48,6 @@ import androidx.compose.ui.unit.sp
 import com.kenwalger.recoilcalculator.ui.theme.Comfortable
 import com.kenwalger.recoilcalculator.ui.theme.Enjoyable
 import com.kenwalger.recoilcalculator.ui.theme.Medic
-import com.kenwalger.recoilcalculator.ui.theme.Purple80
 import com.kenwalger.recoilcalculator.ui.theme.RatherNot
 import com.kenwalger.recoilcalculator.ui.theme.RecoilCalculatorTheme
 import com.kenwalger.recoilcalculator.ui.theme.Uncomfortable
@@ -72,6 +71,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 @Composable
 fun GetInput(modifier: Modifier = Modifier) {
@@ -117,45 +117,22 @@ fun GetInput(modifier: Modifier = Modifier) {
         calBulletSpinEnergy(bulletDiameter, bulletWeight, bulletVelocity, barrelTwist)
     val df = DecimalFormat("###,###.##")
 
-    var comfortColor: Color = if (recoilEnergy > 49.999999999) {
-        Medic
-    } else if (recoilEnergy > 29.999999999) {
-        RatherNot
-    } else if (recoilEnergy > 19.999999999) {
-        Uncomfortable
-    } else if (recoilEnergy > 9.999999999) {
-        Comfortable
-    } else if (recoilEnergy > 0) {
-        Enjoyable
-    } else {
-        Purple80
-    }
+    var comfortColor: Color = getComfortColor(recoilEnergy)
 
     if (isNewShooter) {
-        comfortColor = if (recoilEnergy > (49.999999999)/2) {
-            Medic
-        } else if (recoilEnergy > (29.999999999)/2) {
-            RatherNot
-        } else if (recoilEnergy > (19.999999999)/2) {
-            Uncomfortable
-        } else if (recoilEnergy > (9.999999999)/2) {
-            Comfortable
-        } else if (recoilEnergy > 0) {
-            Enjoyable
-        } else {
-            Purple80
-        }
+        comfortColor = getNewShooterComfortColor(recoilEnergy)
     }
 
     HeaderImage(modifier)
-        Column(
+    Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Row(modifier = modifier
                 .fillMaxWidth()
-                .padding(5.dp)) {
+                .padding(5.dp)
+                ) {
                 Box(modifier = modifier.width(200.dp)) {
                     TextField(
                         value = rifleWeightInput,
@@ -316,43 +293,47 @@ fun GetInput(modifier: Modifier = Modifier) {
                 Box(
                     Modifier
                         .height(25.dp)
-                        .width(50.dp)
+                        .width(25.dp)
                         .background(color = Enjoyable))
                 Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Enjoyable")
             }
+            Spacer(modifier = Modifier.padding(2.dp))
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     Modifier
                         .height(25.dp)
-                        .width(50.dp)
+                        .width(25.dp)
                         .background(color = Comfortable))
                 Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Comfortable")
             }
+            Spacer(modifier = Modifier.padding(2.dp))
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     Modifier
                         .height(25.dp)
-                        .width(50.dp)
+                        .width(25.dp)
                         .background(color = Uncomfortable))
                 Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Uncomfortable")
             }
+            Spacer(modifier = Modifier.padding(2.dp))
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     Modifier
                         .height(25.dp)
-                        .width(50.dp)
+                        .width(25.dp)
                         .background(color = RatherNot))
                 Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("I'd Rather Not")
             }
+            Spacer(modifier = Modifier.padding(2.dp))
             Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     Modifier
                         .height(25.dp)
-                        .width(50.dp)
+                        .width(25.dp)
                         .background(color = Medic))
                 Spacer(modifier = Modifier.padding(start = 9.dp))
                 Text("Call a Medic!")
@@ -361,23 +342,14 @@ fun GetInput(modifier: Modifier = Modifier) {
 
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp)) {
-//            ClickableText(text = hyperlinkAnnotation, style = MaterialTheme.typography.bodySmall,
-//                onClick = { offset ->
-//                    hyperlinkAnnotation.getStringAnnotations(
-//                        tag = "Varmint",
-//                        start = offset,
-//                        end = offset
-//                    ).firstOrNull()?.let {
-//                        Log.d("Varmint Al's URL", it.item)
-//                    }
-//                })
+            .padding(2.dp)) {
             HyperLinkText(modifier = Modifier.fillMaxWidth().padding(10.dp),
                 fullText = "Based on the DOS and Java Script Recoil Calculators from Varmint Al's Shooting Page.",
                 linkText = listOf("Varmint Al's Shooting Page"),
                 hyperlinks = listOf("https://www.varmintal.com/ashot.htm#Calculate_Recoil"))
         }
     }
+
 
 // Function to make text clickable
 @Composable
@@ -437,18 +409,16 @@ fun HyperLinkText(
 }
 
 
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun GetInputPreview(modifier: Modifier = Modifier) {
     RecoilCalculatorTheme {
-        Column(modifier, horizontalAlignment = Alignment.Start) {
+        Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             GetInput(modifier)
         }
     }
 }
+
 
 @Composable
 fun HeaderImage(modifier: Modifier = Modifier) {

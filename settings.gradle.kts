@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Recoil Calculator"
 include(":app")
- 
+include(":shared")
