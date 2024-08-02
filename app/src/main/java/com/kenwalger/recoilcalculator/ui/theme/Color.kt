@@ -15,3 +15,5 @@ val Comfortable = Color(0xFF6DFB7E)
 val Uncomfortable = Color( 0xFFEED202)
 val RatherNot = Color(0xFFFF6600)
 val Medic = Color(0xFFFF001E)
+
+val appColor = Color(0xFF4472C4)

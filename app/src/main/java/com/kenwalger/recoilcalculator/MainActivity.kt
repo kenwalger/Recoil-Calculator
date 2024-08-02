@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -33,13 +34,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -51,6 +54,7 @@ import com.kenwalger.recoilcalculator.ui.theme.Medic
 import com.kenwalger.recoilcalculator.ui.theme.RatherNot
 import com.kenwalger.recoilcalculator.ui.theme.RecoilCalculatorTheme
 import com.kenwalger.recoilcalculator.ui.theme.Uncomfortable
+import com.kenwalger.recoilcalculator.ui.theme.appColor
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -63,7 +67,7 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center))
                 {
-                    Column(modifier = Modifier, horizontalAlignment = Alignment.Start) {
+                    Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
                         GetInput(modifier = Modifier)
                     }
                 }
@@ -123,7 +127,7 @@ fun GetInput(modifier: Modifier = Modifier) {
         comfortColor = getNewShooterComfortColor(recoilEnergy)
     }
 
-    HeaderImage(modifier)
+    Header(modifier)
     Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -286,63 +290,121 @@ fun GetInput(modifier: Modifier = Modifier) {
                 }
             }
         }
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)){
-            Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .height(25.dp)
-                        .width(25.dp)
-                        .background(color = Enjoyable))
-                Spacer(modifier = Modifier.padding(start = 9.dp))
-                Text("Enjoyable")
+        if (!isNewShooter) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)){
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Enjoyable))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Enjoyable (0 - 9.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Comfortable))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Comfortable (10 - 19.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Uncomfortable))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Uncomfortable (20 - 29.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = RatherNot))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("I'd Rather Not (30 - 49.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Medic))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Call a Medic! (50+ ft-lbs)")
+                }
             }
-            Spacer(modifier = Modifier.padding(2.dp))
-            Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .height(25.dp)
-                        .width(25.dp)
-                        .background(color = Comfortable))
-                Spacer(modifier = Modifier.padding(start = 9.dp))
-                Text("Comfortable")
-            }
-            Spacer(modifier = Modifier.padding(2.dp))
-            Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .height(25.dp)
-                        .width(25.dp)
-                        .background(color = Uncomfortable))
-                Spacer(modifier = Modifier.padding(start = 9.dp))
-                Text("Uncomfortable")
-            }
-            Spacer(modifier = Modifier.padding(2.dp))
-            Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .height(25.dp)
-                        .width(25.dp)
-                        .background(color = RatherNot))
-                Spacer(modifier = Modifier.padding(start = 9.dp))
-                Text("I'd Rather Not")
-            }
-            Spacer(modifier = Modifier.padding(2.dp))
-            Row(modifier = Modifier.width(200.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .height(25.dp)
-                        .width(25.dp)
-                        .background(color = Medic))
-                Spacer(modifier = Modifier.padding(start = 9.dp))
-                Text("Call a Medic!")
+        }
+        else {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)){
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Enjoyable))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Enjoyable (0 - 4.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Comfortable))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Comfortable (5 - 9.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Uncomfortable))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Uncomfortable (10 - 14.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = RatherNot))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("I'd Rather Not (15 - 24.99 ft-lbs)")
+                }
+                Spacer(modifier = Modifier.padding(2.dp))
+                Row(modifier = Modifier.width(300.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .height(25.dp)
+                            .width(25.dp)
+                            .background(color = Medic))
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text("Call a Medic! (25+ ft-lbs)")
+                }
             }
         }
 
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(2.dp)) {
+            .padding(2.dp),
+            horizontalArrangement = Arrangement.Center) {
             HyperLinkText(modifier = Modifier.fillMaxWidth().padding(10.dp),
                 fullText = "Based on the DOS and Java Script Recoil Calculators from Varmint Al's Shooting Page.",
                 linkText = listOf("Varmint Al's Shooting Page"),
@@ -361,8 +423,8 @@ fun HyperLinkText(
     linkTextFontWeight: FontWeight = FontWeight.Medium,
     linkTextDecoration: TextDecoration = TextDecoration.Underline,
     hyperlinks: List<String>,
-    fontSize: TextUnit = TextUnit.Unspecified
-) {
+    fontSize: TextUnit = TextUnit.Unspecified,
+    ) {
     val annotatedString = buildAnnotatedString {
         append(fullText)
         linkText.forEachIndexed { index, link ->
@@ -373,7 +435,7 @@ fun HyperLinkText(
                     color = linkTextColor,
                     fontSize = fontSize,
                     fontWeight = linkTextFontWeight,
-                    textDecoration = linkTextDecoration
+                    textDecoration = linkTextDecoration,
                 ),
                 start = startIndex,
                 end = endIndex
@@ -421,9 +483,29 @@ fun GetInputPreview(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun HeaderImage(modifier: Modifier = Modifier) {
-    val headerImage = painterResource(R.drawable.bg_compose_recoil_calculator_logo_small)
-    Image(modifier = modifier, painter = headerImage, contentDescription = null)
+fun Header(modifier: Modifier = Modifier) {
+    val castoroFont = FontFamily(
+        Font(R.font.castoro_regular, FontWeight.Normal)
+    )
+
+    Spacer(modifier = Modifier.padding(20.dp))
+    Column(modifier) {
+        Row(
+            modifier = Modifier.background(appColor).padding(15.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+
+            Text(
+                text = "Recoil Calculator",
+                textAlign = TextAlign.Center,
+                fontFamily = castoroFont,
+                style = LocalTextStyle.current.copy(fontSize = 43.sp)
+
+            )
+
+        }
+        Spacer(modifier = Modifier.width((5.dp)))
+        }
 
 }
 
