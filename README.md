@@ -1,4 +1,7 @@
-# Recoil Calculator
+# Rifle Recoil Calculator
+
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kenwalger/Recoil-Calculator/main)
+
 This is an Android based (Kotlin + Jetpack Compose) app that computes simple rifle recoil and
 bullet energy.
 
