@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,12 +24,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -301,7 +308,7 @@ fun GetInput(modifier: Modifier = Modifier) {
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)) {
-                    Box(modifier = modifier.width(leftColumn)) {
+                    Box(modifier = modifier.width(leftColumn).height(60.dp)) {
                         TextField(
                             value = powderWeightInput,
                             textStyle = TextStyle.Default.copy(fontSize = 14.sp),
@@ -311,34 +318,46 @@ fun GetInput(modifier: Modifier = Modifier) {
                         )
                     }
                     Spacer(modifier = Modifier.width(10.dp))
-                    Row(modifier = Modifier
-                        .width(rightColumn)
-                        .background(color = Color.Transparent),
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Text(modifier = Modifier,
-                            text = "New Shooter?",
-                            fontSize = 12.sp,
-                            color = Color.Black,)
-                        Spacer(modifier = Modifier.padding(start = 18.dp))
-                        Switch(
-                            modifier = Modifier.scale(.90f),
-                            checked = isNewShooter,
-                            onCheckedChange = {
-                                isNewShooter = it
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = glaucous,
-                                checkedTrackColor = Color.White,
-                                uncheckedThumbColor = Color.Black,
-                                uncheckedTrackColor = Color.White
-                            )
-                        )
+                    Column{
+                        Row(modifier = Modifier
+                            .width(rightColumn)
+                            .height(40.dp)
+                            .background(color = Color.Transparent),
+                            verticalAlignment = Alignment.CenterVertically) {
+                            Text(modifier = Modifier,
+                                text = "New Shooter?",
+                                fontSize = 12.sp,
+                                color = Color.Black,)
+                            Spacer(modifier = Modifier.padding(start = 18.dp))
+                            Switch(
+                                modifier = Modifier.scale(.90f),
+                                checked = isNewShooter,
+                                onCheckedChange = {
+                                    isNewShooter = it
+                                },
+                                colors = SwitchDefaults.colors(
+                                    checkedThumbColor = glaucous,
+                                    checkedTrackColor = Color.White,
+                                    uncheckedThumbColor = Color.Black,
+                                    uncheckedTrackColor = Color.White
+                                )
+                        )}
+                        Row(modifier=Modifier
+                                .width(rightColumn)){
+                                Text(modifier = Modifier,
+                                    text = "Muzzle Device",
+                                    fontSize = 12.sp,
+                                    color = Color.Black)
+                                Spacer(modifier = Modifier.padding(start = 18.dp))
+                                MuzzleDeviceMenu()
+                            }
+                        }
                     }
-                    }
+
                 }
         }
 
-        // Comfort Description Card
+    // Comfort Description Card
         if (!isNewShooter) {
             Card (modifier = Modifier
                 .padding(8.dp)
@@ -734,6 +753,40 @@ fun Header(modifier: Modifier = Modifier) {
         }
     }
 }
+
+// Muzzle Device Menu
+@Composable
+fun MuzzleDeviceMenu() {
+
+    val muzzleDeviceOptionList = listOf("None", "Brake", "Silencer")
+    val expanded = remember { mutableStateOf(false) }
+    val muzzleDeviceValue = remember { mutableStateOf(muzzleDeviceOptionList[0])}
+
+    Surface(modifier = Modifier.fillMaxSize()) {
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+
+            Row(modifier = Modifier
+                .clickable { expanded.value = !expanded.value }
+                .align(Alignment.Center)) {
+                Text(text = muzzleDeviceValue.value)
+                Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null)
+
+                DropdownMenu(expanded = expanded.value, onDismissRequest = {
+                    expanded.value = false
+                }) {
+                    muzzleDeviceOptionList.forEach {
+                        DropdownMenuItem(text = { Text(text = it) }, onClick = {
+                            muzzleDeviceValue.value = it
+                            expanded.value = false
+                        })
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 // Dialog Box
 val dialogBoxHeight = 375.dp

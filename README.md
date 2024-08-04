@@ -29,9 +29,9 @@ While there are exceptions to every rule, I believe that these general guideline
 are a decent starting point when exploring rifle + cartridge combinations.
 
 ## Screenshot
-<img src="https://github.com/kenwalger/Recoil-Calculator/blob/master/app/src/main/res/drawable/app_screen_shot_colors.png" width="500" alt="App Screen Shot">
+<img src="https://github.com/kenwalger/Recoil-Calculator/blob/main/app/src/main/res/drawable/app_screen_shot_colors.png" width="500" alt="App Screen Shot">
 
 ### Using the New Shooter option
-<img src="https://github.com/kenwalger/Recoil-Calculator/blob/master/app/src/main/res/drawable/screen_shot_demo.gif" width="500" alt="Demo of 'New Shooter' Option">
+<img src="https://github.com/kenwalger/Recoil-Calculator/blob/main/app/src/main/res/drawable/screen_shot_demo.gif" width="500" alt="Demo of 'New Shooter' Option">
 
 #### Based on the DOS and Java Script Recoil Calculators from [Varmint Al's Shooting Page](https://www.varmintal.com/ashot.htm#Calculate_Recoil)
