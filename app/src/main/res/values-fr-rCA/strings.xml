@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rifle Recoil Calculator</string>
+    <string name="powder_weight_in_grains">Poids de la poudre (grains)</string>
+    <string name="bullet_weight_in_grains">Poids de la balle (grains)</string>
+    <string name="bullet_diameter_in_inches">Diamètre de la balle (pouces)</string>
+    <string name="barrel_twist_in_revolutions_per_inch">Barrel Twist (Rev par pouce)</string>
+    <string name="rifle_weight_in_pounds">Poids du fusil (lbs) :</string>
+    <string name="rifle_velocity_fps">"Vitesse du fusil (ips) : %s "</string>
+    <string name="bullet_angular_velocity_rpm">Vitesse angulaire de la balle (RPM) : %s</string>
+    <string name="bullet_linear_muzzle_energy_ft_lbs">Énergie linéaire initiale de la balle (pi-lb) : %s</string>
+    <string name="bullet_velocity_fps">"Vitesse de balle (fps) "</string>
+    <string name="rifle_recoil_energy_ft_lbs">"Énergie de recul du fusil (ft-lbs) : %s "</string>
+    <string name="bullet_spin_energy_ft_lbs">"Énergie de rotation de la balle (pi-lb) : %s "</string>
+    <string name="calculate">Calculateur de recul</string>
+    <string name="logo_description">" Logo du calculateur de recul"</string>
+    <string name="bullet_diameter_input">" Diamètre de la balle (pouces)"</string>
+    <string name="enjoyable">Agréable (0 – 9,99 pi-lb)</string>
+    <string name="comfortable">Confortable (10 – 19,99 pi-lb)</string>
+    <string name="uncomfortable">Inconfortable (20 – 29,99 pi-lb)</string>
+    <string name="rather_not">Je préfère ne pas (30 à 49,99 pieds-livres)</string>
+    <string name="medic">Appelez un médecin ! (50+ pieds-livres)</string>
+    <string name="enjoyable_new_shooter">"Agréable (0 – 4,99 pi-lb) "</string>
+    <string name="comfortable_new_shooter">Confortable (5 à 9,99 pi-lb)</string>
+    <string name="uncomfortable_new_shooter">Inconfortable (10 – 14,99 pi-lb)</string>
+    <string name="rather_not_new_shooter">Je préfère ne pas (15 – 24,99 pi-lb)</string>
+    <string name="medic_new_shooter">Appelez un médecin ! (25+ pieds-livres)</string>
+    <string name="dialog_disclaimer">Les valeurs utilisées pour le niveau de confort sont basées sur un tireur « moyen »… quelle que soit la moyenne. Ils servent de référence pour le niveau de confort.</string>
+    <string name="dismiss">Rejeter</string>
+    <string name="disclaimer">Clause de non-responsabilité</string>
+</resources>

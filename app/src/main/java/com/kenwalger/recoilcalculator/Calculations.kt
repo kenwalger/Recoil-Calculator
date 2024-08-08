@@ -43,9 +43,9 @@ fun calRifleVelocity(rifleWeightPounds: Double,
 fun calBulletAngularVelocity(twistRate: Int, velocity: Int): Double {
     val pi = 3.14159265
 
-    val twist: Double= (1 / twistRate.toDouble())                                                                           // rev/inch
-    val bulletVelocityInchesPerSecond = velocity * 12                                                            // in/sec
-    val bulletAngularVelocity = bulletVelocityInchesPerSecond * twist * 2 * pi                                   // radians/sec
+    val twist: Double= (1 / twistRate.toDouble())                                     // rev/inch
+    val bulletVelocityInchesPerSecond = velocity * 12                                 // in/sec
+    val bulletAngularVelocity = bulletVelocityInchesPerSecond * twist * 2 * pi        // radians/sec
 
     return bulletAngularVelocity
 
@@ -54,10 +54,10 @@ fun calBulletAngularVelocity(twistRate: Int, velocity: Int): Double {
 // Bullet Linear Muzzle Energy Calculation (ft-lb)
 // KE = .5 * BM * VIN ^ 2 / 12:     REM Bullet linear energy (ft-lb)
 fun calBulletLinearMuzzleEnergy(bulletWeightGrains: Int, velocity: Int ): Double {
-    val gravityForce = 386                                                                                  // Gravity 386 (lbm-in)/(lbf-sec^2)
+    val gravityForce = 386                                                             // Gravity 386 (lbm-in)/(lbf-sec^2)
 
-    val bulletMass: Double = (bulletWeightGrains / (7000 * gravityForce.toDouble()))                                                      // lbm
-    val bulletVelocityInchesPerSecond = velocity * 12                                                            // in/sec
+    val bulletMass: Double = (bulletWeightGrains / (7000 * gravityForce.toDouble()))   // lbm
+    val bulletVelocityInchesPerSecond = velocity * 12                                  // in/sec
     val bulletLinearMuzzleEnergy = .5 * bulletMass * (bulletVelocityInchesPerSecond * bulletVelocityInchesPerSecond) / 12       // ft-lb
 
     return bulletLinearMuzzleEnergy

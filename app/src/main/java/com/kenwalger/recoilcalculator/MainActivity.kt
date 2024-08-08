@@ -45,6 +45,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -85,14 +86,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RecoilCalculatorTheme {
-                Scaffold(modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-                    )
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center)
+                )
                 {
-                    Column(modifier = Modifier
-                        .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         GetInput(modifier = Modifier)
                     }
                 }
@@ -106,38 +110,38 @@ class MainActivity : ComponentActivity() {
 fun GetInput(modifier: Modifier = Modifier) {
 
     var rifleWeightInput by remember {
-        mutableStateOf("20")
+        mutableStateOf("8")
     }
     val rifleWeight = rifleWeightInput.toDoubleOrNull() ?: 0.0
 
     var barrelTwistInput by remember {
-        mutableStateOf("8")
+        mutableStateOf("10")
     }
     val barrelTwist = barrelTwistInput.toIntOrNull() ?: 0
 
     var bulletDiameterInput by remember {
-        mutableStateOf(".264")
+        mutableStateOf(".243")
     }
     val bulletDiameter = bulletDiameterInput.toDoubleOrNull() ?: 0.0
 
     var bulletVelocityInput by remember {
-        mutableStateOf("2800")
+        mutableStateOf("2900")
     }
     val bulletVelocity = bulletVelocityInput.toIntOrNull() ?: 0
 
     var bulletWeightInput by remember {
-        mutableStateOf("140")
+        mutableStateOf("100")
     }
     val bulletWeight = bulletWeightInput.toIntOrNull() ?: 0
 
     var powderWeightInput by remember {
-        mutableStateOf("44.3")
+        mutableStateOf("42.0")
     }
     val powderWeight = powderWeightInput.toDoubleOrNull() ?: 0.0
 
     var isNewShooter by remember { mutableStateOf(false) }
 
-    val recoilEnergy = calRecoilEnergy(rifleWeight, bulletWeight, powderWeight, bulletVelocity)
+    var recoilEnergy = calRecoilEnergy(rifleWeight, bulletWeight, powderWeight, bulletVelocity)
     val rifleVelocity = calRifleVelocity(rifleWeight, bulletWeight, powderWeight, bulletVelocity)
     val bulletAngularVelocity =
         calBulletAngularVelocity(barrelTwist, bulletVelocity) * 30 / 3.14159265
@@ -146,15 +150,32 @@ fun GetInput(modifier: Modifier = Modifier) {
         calBulletSpinEnergy(bulletDiameter, bulletWeight, bulletVelocity, barrelTwist)
     val df = DecimalFormat("###,###.##")
 
+    // Dropdown Menu Variables
+    val muzzleDeviceOptionList = listOf("None", "Brake", "Silencer")
+    val expanded = remember { mutableStateOf(false) }
+    val muzzleDeviceValue = remember { mutableStateOf(muzzleDeviceOptionList[0]) }
+    val muzzleBrakeReductionValue = .45
+    val silencerReductionValue = .25
+
+    if (muzzleDeviceValue.value == "Brake") {
+        recoilEnergy = recoilEnergy - (recoilEnergy * muzzleBrakeReductionValue)
+    } else if (muzzleDeviceValue.value == "Silencer") {
+        recoilEnergy = recoilEnergy - (recoilEnergy * silencerReductionValue)
+    }
+
     // Sizes & fonts
+    val calculationCardHeight = 485.dp
     val backgroundBoxSize = 18.dp
     val boxSize = 13.dp
-    val descriptionFontSize = 12.sp
+    val descriptionFontSize = 16.sp
+    val textBoxFontSize = 14.sp
     val leftColumn = 185.dp
     val rightColumn = 210.dp
     val descriptionCardHeight = 160.dp
     val descriptionRowWidth = 300.dp
     val descriptionRowPadding = 2.dp
+
+
 
     var comfortColor: Color = getComfortColor(recoilEnergy)
 
@@ -162,498 +183,607 @@ fun GetInput(modifier: Modifier = Modifier) {
         comfortColor = getNewShooterComfortColor(recoilEnergy)
     }
 
+
     Header(modifier)
-    Card (
-        colors = CardColors(containerColor = gunmetalGray,
+    Card(
+        colors = CardColors(
+            containerColor = gunmetalGray,
             contentColor = Color.Black,
             disabledContentColor = Color.Yellow,
-            disabledContainerColor = Color.Yellow),
+            disabledContainerColor = Color.Yellow
+        ),
         modifier = Modifier
             .padding(12.dp)
             .fillMaxWidth()
-            .height(420.dp)) {
+            .height(calculationCardHeight)
+    ) {
         Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
-
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)
-                    ) {
-                    Box(modifier = modifier.width(leftColumn)) {
-                        TextField(
-                            value = rifleWeightInput,
-                            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                            onValueChange = { rifleWeightInput = it },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.rifle_weight_in_pounds)) }
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(modifier = Modifier
-                        .width(rightColumn)
-                        .background(color = comfortColor)) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            fontSize = 12.sp,
-                            text = stringResource(
-                                R.string.rifle_recoil_energy_ft_lbs,
-                                df.format(recoilEnergy)
-                            )
-                        )
-                    }
+                Box(modifier = modifier.width(leftColumn)) {
+                    TextField(
+                        value = rifleWeightInput,
+                        textStyle = TextStyle.Default.copy(fontSize = textBoxFontSize),
+                        onValueChange = { rifleWeightInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.rifle_weight_in_pounds) ) }
+                    )
                 }
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)) {
-                    Box(modifier = modifier.width(leftColumn)) {
-                        TextField(
-                            value = barrelTwistInput,
-                            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                            onValueChange = { barrelTwistInput = it },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.barrel_twist_in_revolutions_per_inch)) }
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(modifier = modifier
-                        .width(rightColumn)
-                        .background(color = Color.LightGray)) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            fontSize = 12.sp,
-                            text = stringResource(R.string.rifle_velocity_fps, df.format(rifleVelocity))
-                        )
-                    }
-                }
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)) {
-                    Box(modifier = modifier.width(leftColumn)) {
-                        TextField(
-                            value = bulletDiameterInput,
-                            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                            onValueChange = { bulletDiameterInput = it },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.bullet_diameter_in_inches)) }
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(modifier = modifier
-                        .width(rightColumn)
-                        .background(color = Color.LightGray)) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            fontSize = 12.sp,
-                            text = stringResource(
-                                R.string.bullet_angular_velocity_rpm,
-                                df.format(bulletAngularVelocity)
-                            )
-                        )
-                    }
-                }
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)) {
-                    Box(modifier = modifier.width(leftColumn)) {
-                        TextField(
-                            value = bulletVelocityInput,
-                            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                            onValueChange = { bulletVelocityInput = it },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.bullet_velocity_fps)) }
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(modifier = modifier
-                        .width(rightColumn)
-                        .background(color = Color.LightGray)) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            fontSize = 12.sp,
-                            text = stringResource(
-                                R.string.bullet_linear_muzzle_energy_ft_lbs,
-                                df.format(bulletLinearMuzzleEnergy)
-                            )
-                        )
-                    }
-                }
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)) {
-                    Box(modifier = modifier.width(leftColumn)) {
-                        TextField(
-                            value = bulletWeightInput,
-                            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                            onValueChange = { bulletWeightInput = it },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.bullet_weight_in_grains)) }
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(modifier = modifier
-                        .width(rightColumn)
-                        .background(color = Color.LightGray)) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            fontSize = 12.sp,
-                            text = stringResource(
-                                R.string.bullet_spin_energy_ft_lbs,
-                                df.format(bulletSpinEnergy)
-                            )
-                        )
-                    }
-                }
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)) {
-                    Box(modifier = modifier.width(leftColumn).height(60.dp)) {
-                        TextField(
-                            value = powderWeightInput,
-                            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-                            onValueChange = { powderWeightInput = it },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.powder_weight_in_grains)) }
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column{
-                        Row(modifier = Modifier
-                            .width(rightColumn)
-                            .height(40.dp)
-                            .background(color = Color.Transparent),
-                            verticalAlignment = Alignment.CenterVertically) {
-                            Text(modifier = Modifier,
-                                text = "New Shooter?",
-                                fontSize = 12.sp,
-                                color = Color.Black,)
-                            Spacer(modifier = Modifier.padding(start = 18.dp))
-                            Switch(
-                                modifier = Modifier.scale(.90f),
-                                checked = isNewShooter,
-                                onCheckedChange = {
-                                    isNewShooter = it
-                                },
-                                colors = SwitchDefaults.colors(
-                                    checkedThumbColor = glaucous,
-                                    checkedTrackColor = Color.White,
-                                    uncheckedThumbColor = Color.Black,
-                                    uncheckedTrackColor = Color.White
-                                )
-                        )}
-                        Row(modifier=Modifier
-                                .width(rightColumn)){
-                                Text(modifier = Modifier,
-                                    text = "Muzzle Device",
-                                    fontSize = 12.sp,
-                                    color = Color.Black)
-                                Spacer(modifier = Modifier.padding(start = 18.dp))
-                                MuzzleDeviceMenu()
-                            }
-                        }
-                    }
-
-                }
-        }
-
-    // Comfort Description Card
-        if (!isNewShooter) {
-            Card (modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                .height(descriptionCardHeight),
-                colors = CardColors(containerColor = gunmetalGray,
-                    contentColor = Color.Black,
-                    disabledContentColor = Color.Yellow,
-                    disabledContainerColor = Color.Yellow)
-            ) {
-                Column(
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
+                        .width(rightColumn)
+                        .background(color = comfortColor)
                 ) {
-                    Row(
-                        modifier = Modifier.width(descriptionRowWidth),
-                        verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box{
-                                Box(
-                                    Modifier
-                                        .height(backgroundBoxSize)
-                                        .width(backgroundBoxSize)
-                                        .background(color = backgroundBoxColor)
-                                )
-                                Box(
-                                    Modifier
-                                        .height(boxSize)
-                                        .width(boxSize)
-                                        .background(color = Enjoyable)
-                                        .align(Alignment.Center)
-                                )
-                            }
-                            Spacer(modifier = Modifier.padding(start = 9.dp))
-                            Text(
-                                stringResource(R.string.enjoyable),
-                                fontSize = descriptionFontSize)
-                        }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(
-                        modifier = Modifier.width(descriptionRowWidth),
-                        verticalAlignment = Alignment.CenterVertically
-                        ) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = Comfortable)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                            Spacer(modifier = Modifier.padding(start = 9.dp))
-                            Text(
-                                stringResource(R.string.comfortable),
-                                fontSize = descriptionFontSize)
-                        }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(
-                        modifier = Modifier.width(descriptionRowWidth),
-                        verticalAlignment = Alignment.CenterVertically
-                        ) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = Uncomfortable)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                            Spacer(modifier = Modifier.padding(start = 9.dp))
-                            Text(
-                                stringResource(R.string.uncomfortable),
-                                fontSize = descriptionFontSize)
-                        }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(
-                        modifier = Modifier.width(descriptionRowWidth),
-                        verticalAlignment = Alignment.CenterVertically
-                        ) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = RatherNot)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                            Spacer(modifier = Modifier.padding(start = 9.dp))
-                            Text(
-                                stringResource(R.string.rather_not),
-                                fontSize = descriptionFontSize)
-                        }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(
-                        modifier = Modifier.width(descriptionRowWidth),
-                        verticalAlignment = Alignment.CenterVertically
-                        ) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = Medic)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                            Spacer(modifier = Modifier.padding(start = 9.dp))
-                            Text(
-                                stringResource(R.string.medic),
-                                fontSize = descriptionFontSize)
-                        }
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = textBoxFontSize,
+                        text = stringResource(
+                            R.string.rifle_recoil_energy_ft_lbs,
+                            df.format(recoilEnergy)
+                        )
+                    )
                 }
             }
-        }
-        else {
-            Card (modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                .height(descriptionCardHeight),
-                colors = CardColors(containerColor = gunmetalGray,
-                    contentColor = Color.Black,
-                    disabledContentColor = Color.Yellow,
-                    disabledContainerColor = Color.Yellow)
-                ) {
-                Column(modifier = Modifier
+            Row(
+                modifier = modifier
                     .fillMaxWidth()
-                    .padding(10.dp)){
-                    Row(modifier = Modifier.width(descriptionRowWidth), verticalAlignment = Alignment.CenterVertically) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = Enjoyable)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(start = 9.dp))
-                        Text(
-                            stringResource(R.string.enjoyable_new_shooter),
-                            fontSize = descriptionFontSize)
-                    }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(modifier = Modifier.width(descriptionRowWidth), verticalAlignment = Alignment.CenterVertically) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = Comfortable)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(start = 9.dp))
-                        Text(
-                            stringResource(R.string.comfortable_new_shooter),
-                            fontSize = descriptionFontSize)
-                    }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(modifier = Modifier.width(descriptionRowWidth), verticalAlignment = Alignment.CenterVertically) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = Uncomfortable)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(start = 9.dp))
-                        Text(
-                            stringResource(R.string.uncomfortable_new_shooter),
-                            fontSize = descriptionFontSize)
-                    }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(modifier = Modifier.width(descriptionRowWidth), verticalAlignment = Alignment.CenterVertically) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = RatherNot)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(start = 9.dp))
-                        Text(
-                            stringResource(R.string.rather_not_new_shooter),
-                            fontSize = descriptionFontSize)
-                    }
-                    Spacer(modifier = Modifier.padding(descriptionRowPadding))
-                    Row(modifier = Modifier.width(descriptionRowWidth), verticalAlignment = Alignment.CenterVertically) {
-                        Box{
-                            Box(
-                                Modifier
-                                    .height(backgroundBoxSize)
-                                    .width(backgroundBoxSize)
-                                    .background(color = backgroundBoxColor)
-                            )
-                            Box(
-                                Modifier
-                                    .height(boxSize)
-                                    .width(boxSize)
-                                    .background(color = Medic)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(start = 9.dp))
-                        Text(
-                            stringResource(R.string.medic_new_shooter),
-                            fontSize = descriptionFontSize)
-                    }
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Box(modifier = modifier.width(leftColumn)) {
+                    TextField(
+                        value = barrelTwistInput,
+                        textStyle = TextStyle.Default.copy(fontSize = textBoxFontSize),
+                        onValueChange = { barrelTwistInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.barrel_twist_in_revolutions_per_inch)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(
+                    modifier = modifier
+                        .width(rightColumn)
+                        .background(color = Color.LightGray)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = textBoxFontSize,
+                        text = stringResource(R.string.rifle_velocity_fps, df.format(rifleVelocity))
+                    )
                 }
             }
-        }
-
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(2.dp)
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
-            HyperLinkText(modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-                fullText = stringResource(R.string.attribution),
-                linkText = listOf("Varmint Al's Shooting Page"),
-                hyperlinks = listOf("https://www.varmintal.com/ashot.htm#Calculate_Recoil"))
+                Box(modifier = modifier.width(leftColumn)) {
+                    TextField(
+                        value = bulletDiameterInput,
+                        textStyle = TextStyle.Default.copy(fontSize = textBoxFontSize),
+                        onValueChange = { bulletDiameterInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.bullet_diameter_in_inches)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(
+                    modifier = modifier
+                        .width(rightColumn)
+                        .background(color = Color.LightGray)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = textBoxFontSize,
+                        text = stringResource(
+                            R.string.bullet_angular_velocity_rpm,
+                            df.format(bulletAngularVelocity)
+                        )
+                    )
+                }
             }
-        Spacer(modifier = Modifier.padding(descriptionRowPadding))
-        val shouldShowDialog = remember { mutableStateOf(false) }
-
-        if (shouldShowDialog.value) {
-            DisclaimerDialog(shouldShowDialog = shouldShowDialog)
-        }
-
-        Button(
-            onClick = { shouldShowDialog.value = true},
-            modifier = Modifier.wrapContentSize(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = appColor,
-                contentColor = buttonText),
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
-            Text(text = stringResource(R.string.disclaimer))
+                Box(modifier = modifier.width(leftColumn)) {
+                    TextField(
+                        value = bulletVelocityInput,
+                        textStyle = TextStyle.Default.copy(fontSize = textBoxFontSize),
+                        onValueChange = { bulletVelocityInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.bullet_velocity_fps)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(
+                    modifier = modifier
+                        .width(rightColumn)
+                        .background(color = Color.LightGray)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = textBoxFontSize,
+                        text = stringResource(
+                            R.string.bullet_linear_muzzle_energy_ft_lbs,
+                            df.format(bulletLinearMuzzleEnergy)
+                        )
+                    )
+                }
+            }
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Box(modifier = modifier.width(leftColumn)) {
+                    TextField(
+                        value = bulletWeightInput,
+                        textStyle = TextStyle.Default.copy(fontSize = textBoxFontSize),
+                        onValueChange = { bulletWeightInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.bullet_weight_in_grains)) }
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(
+                    modifier = modifier
+                        .width(rightColumn)
+                        .background(color = Color.LightGray)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        fontSize = textBoxFontSize,
+                        text = stringResource(
+                            R.string.bullet_spin_energy_ft_lbs,
+                            df.format(bulletSpinEnergy)
+                        )
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Box(
+                    modifier = modifier
+                        .width(leftColumn)
+                        .height(60.dp)
+                ) {
+                    TextField(
+                        value = powderWeightInput,
+                        textStyle = TextStyle.Default.copy(fontSize = textBoxFontSize),
+                        onValueChange = { powderWeightInput = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.powder_weight_in_grains)) }
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Row(
+                modifier = Modifier
+                    .height(40.dp)
+                    .background(color = Color.Transparent),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                    Spacer(modifier = Modifier.padding(start = 10.dp))
+                    Text(
+                        modifier = Modifier,
+                        text = "New Shooter?",
+                        fontSize = textBoxFontSize,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.padding(start = 5.dp))
+                    Switch(
+                        modifier = Modifier.scale(.90f),
+                        checked = isNewShooter,
+                        onCheckedChange = {
+                            isNewShooter = it
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = glaucous,
+                            checkedTrackColor = Color.White,
+                            uncheckedThumbColor = Color.Black,
+                            uncheckedTrackColor = Color.White
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.padding(start = 18.dp))
+                    Text(
+                        modifier = Modifier,
+                        text = "Muzzle Device",
+                        fontSize = textBoxFontSize,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.padding(start = 5.dp))
+                    // muzzleDeviceMenu()
+
+                    // Dropdown Menu for Muzzle Device
+                    Surface(modifier = Modifier.fillMaxSize()) {
+
+                        Box(modifier = Modifier.fillMaxWidth()) {
+
+                            Row(modifier = Modifier
+                                .clickable { expanded.value = !expanded.value }
+                                .align(Alignment.Center)) {
+                                Text(text = muzzleDeviceValue.value)
+                                Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null)
+
+                                DropdownMenu(expanded = expanded.value, onDismissRequest = {
+                                    expanded.value = false
+                                }) {
+                                    muzzleDeviceOptionList.forEach {
+                                        DropdownMenuItem(text = { Text(text = it) }, onClick = {
+                                            muzzleDeviceValue.value = it
+                                            expanded.value = false
+                                        })
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.padding(end = 10.dp))
+            }
+            Spacer(modifier = Modifier.padding(start = 5.dp))
         }
     }
+
+    // Comfort Description Card
+    if (!isNewShooter) {
+        Card(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(descriptionCardHeight),
+
+            colors = CardColors(
+                containerColor = gunmetalGray,
+                contentColor = Color.Black,
+                disabledContentColor = Color.Yellow,
+                disabledContainerColor = Color.Yellow
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Enjoyable)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.enjoyable),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Comfortable)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.comfortable),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Uncomfortable)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.uncomfortable),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = RatherNot)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.rather_not),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Medic)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.medic),
+                        fontSize = descriptionFontSize
+                    )
+                }
+            }
+        }
+    } else {
+        Card(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(descriptionCardHeight),
+            colors = CardColors(
+                containerColor = gunmetalGray,
+                contentColor = Color.Black,
+                disabledContentColor = Color.Yellow,
+                disabledContainerColor = Color.Yellow
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Enjoyable)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.enjoyable_new_shooter),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Comfortable)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.comfortable_new_shooter),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Uncomfortable)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.uncomfortable_new_shooter),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = RatherNot)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.rather_not_new_shooter),
+                        fontSize = descriptionFontSize
+                    )
+                }
+                Spacer(modifier = Modifier.padding(descriptionRowPadding))
+                Row(
+                    modifier = Modifier.width(descriptionRowWidth),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        Box(
+                            Modifier
+                                .height(backgroundBoxSize)
+                                .width(backgroundBoxSize)
+                                .background(color = backgroundBoxColor)
+                        )
+                        Box(
+                            Modifier
+                                .height(boxSize)
+                                .width(boxSize)
+                                .background(color = Medic)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(start = 9.dp))
+                    Text(
+                        stringResource(R.string.medic_new_shooter),
+                        fontSize = descriptionFontSize
+                    )
+                }
+            }
+        }
+    }
+
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(2.dp)
+    ) {
+        HyperLinkText(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            fullText = stringResource(R.string.attribution),
+            linkText = listOf("Varmint Al's Shooting Page"),
+            hyperlinks = listOf("https://www.varmintal.com/ashot.htm#Calculate_Recoil")
+        )
+    }
+    Spacer(modifier = Modifier.padding(descriptionRowPadding))
+    val shouldShowDialog = remember { mutableStateOf(false) }
+
+    if (shouldShowDialog.value) {
+        DisclaimerDialog(shouldShowDialog = shouldShowDialog)
+    }
+
+    Button(
+        onClick = { shouldShowDialog.value = true },
+        modifier = Modifier.wrapContentSize(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = appColor,
+            contentColor = buttonText
+        ),
+    ) {
+        Text(text = stringResource(R.string.disclaimer))
+    }
+}
 
 
 // Function to make text clickable
@@ -667,7 +797,7 @@ fun HyperLinkText(
     linkTextDecoration: TextDecoration = TextDecoration.Underline,
     hyperlinks: List<String>,
     fontSize: TextUnit = TextUnit.Unspecified,
-    ) {
+) {
     val annotatedString = buildAnnotatedString {
         append(fullText)
         linkText.forEachIndexed { index, link ->
@@ -697,7 +827,7 @@ fun HyperLinkText(
             start = 0,
             end = fullText.length
         )
-            }
+    }
 
     val uriHandler = LocalUriHandler.current
 
@@ -733,34 +863,34 @@ fun Header(modifier: Modifier = Modifier) {
 
     Spacer(modifier = Modifier.padding(20.dp))
     Card(modifier = Modifier) {
-    Column(modifier) {
-        Row(
-            modifier = Modifier
-                .background(appColor)
-                .padding(15.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
+        Column(modifier) {
+            Row(
+                modifier = Modifier
+                    .background(appColor)
+                    .padding(15.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
 
-            Text(
-                text = "Rifle Recoil Calculator",
-                textAlign = TextAlign.Center,
-                fontFamily = castoroFont,
-                style = LocalTextStyle.current.copy(fontSize = 30.sp)
+                Text(
+                    text = "Rifle Recoil Calculator",
+                    textAlign = TextAlign.Center,
+                    fontFamily = castoroFont,
+                    style = LocalTextStyle.current.copy(fontSize = 30.sp)
 
-            )
+                )
 
-        }
+            }
         }
     }
 }
 
 // Muzzle Device Menu
 @Composable
-fun MuzzleDeviceMenu() {
+fun muzzleDeviceMenu(): String {
 
     val muzzleDeviceOptionList = listOf("None", "Brake", "Silencer")
     val expanded = remember { mutableStateOf(false) }
-    val muzzleDeviceValue = remember { mutableStateOf(muzzleDeviceOptionList[0])}
+    val muzzleDeviceValue = remember { mutableStateOf(muzzleDeviceOptionList[0]) }
 
     Surface(modifier = Modifier.fillMaxSize()) {
 
@@ -785,6 +915,8 @@ fun MuzzleDeviceMenu() {
             }
         }
     }
+
+    return muzzleDeviceValue.value
 }
 
 
@@ -797,50 +929,52 @@ val dialogBoxCorner = 16.dp
 fun DisclaimerDialog(
     onDismissRequest: (() -> Unit)? = null,
     shouldShowDialog: MutableState<Boolean>
-){
-    if(shouldShowDialog.value) {
-    Dialog(onDismissRequest = {
-        if (onDismissRequest != null) {
-            onDismissRequest()
-            shouldShowDialog.value = false
-        }
-    }) {
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .height(dialogBoxHeight)
-            .padding(dialogBoxPadding),
-            shape = RoundedCornerShape(dialogBoxCorner),
-        ) {
-            Column(
+) {
+    if (shouldShowDialog.value) {
+        Dialog(onDismissRequest = {
+            if (onDismissRequest != null) {
+                onDismissRequest()
+                shouldShowDialog.value = false
+            }
+        }) {
+            Card(
                 modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .fillMaxWidth()
+                    .height(dialogBoxHeight)
+                    .padding(dialogBoxPadding),
+                shape = RoundedCornerShape(dialogBoxCorner),
             ) {
-                Text(
-                    text = stringResource(R.string.dialog_disclaimer),
-                    modifier = Modifier.padding(dialogBoxPadding),
-                    textAlign = TextAlign.Center
-                )
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                ){
-                    Button(
-                        onClick = {
-                            shouldShowDialog.value = false
-                        },
-                        modifier = Modifier.padding(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = appColor,
-                            contentColor = buttonText),
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(R.string.dialog_disclaimer),
+                        modifier = Modifier.padding(dialogBoxPadding),
+                        textAlign = TextAlign.Center
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
                     ) {
-                        Text(stringResource(R.string.dismiss))
+                        Button(
+                            onClick = {
+                                shouldShowDialog.value = false
+                            },
+                            modifier = Modifier.padding(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = appColor,
+                                contentColor = buttonText
+                            ),
+                        ) {
+                            Text(stringResource(R.string.dismiss))
+                        }
                     }
                 }
             }
         }
-}
     }
 }

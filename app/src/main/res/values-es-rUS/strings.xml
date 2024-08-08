@@ -15,4 +15,17 @@
     <string name="bullet_velocity_fps">Velocidad de bala (fps)</string>
     <string name="rifle_recoil_energy_ft_lbs">Energía de retroceso del rifle (pies-libras): %s</string>
     <string name="bullet_spin_energy_ft_lbs">Energía de giro de la bala (pies-libras): %s</string>
+    <string name="enjoyable">Agradable (0 – 9,99 pies-libras)</string>
+    <string name="comfortable">Cómodo (10 – 19,99 pies-libras)</string>
+    <string name="uncomfortable">Incómodo (20 – 29.99 ft-lbs)</string>
+    <string name="rather_not">Preferiría no (30 – 49,99 pies-libras)</string>
+    <string name="medic">¡Llame a un médico! (50+ pies-libras)</string>
+    <string name="enjoyable_new_shooter">Agradable (0 – 4,99 pies-libras)</string>
+    <string name="comfortable_new_shooter">Cómodo (5 – 9,99 pies-libras)</string>
+    <string name="uncomfortable_new_shooter">Incómodo (10 – 14.99 ft-lbs)</string>
+    <string name="rather_not_new_shooter">" Preferiría no (15 – 24,99 pies-libras)"</string>
+    <string name="medic_new_shooter">" ¡Llame a un médico! (25+ pies-libras)"</string>
+    <string name="dialog_disclaimer">" Los valores utilizados para el nivel de comodidad se basan en un tirador \"promedio\"… cualquiera que sea el significado promedio. Están pensados ​​como base para el nivel de comodidad."</string>
+    <string name="dismiss">Despedir</string>
+    <string name="disclaimer">Descargo de responsabilidad</string>
 </resources>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Recoil Calculator</string>
+    <string name="app_name">Rifle Recoil Calculator</string>
     <string name="powder_weight_in_grains">Powder Weight (grains)</string>
     <string name="bullet_weight_in_grains">Bullet Weight (grains)</string>
     <string name="bullet_diameter_in_inches">Bullet Diameter (inches)</string>
@@ -14,18 +14,18 @@
     <string name="calculate">Recoil Calculator</string>
     <string name="logo_description">Recoil calculator logo</string>
     <string name="bullet_diameter_input">Bullet Diameter (Inches)</string>
-    <string name="attribution">Based on the DOS and Java Script Recoil Calculators from Varmint Al\'s Shooting Page.</string>
-    <string name="enjoyable">Enjoyable (0 - 9.99 ft-lbs)</string>
-    <string name="comfortable">Comfortable (10 - 19.99 ft-lbs)</string>
-    <string name="uncomfortable">Uncomfortable (20 - 29.99 ft-lbs)</string>
-    <string name="rather_not">I\'d Rather Not (30 - 49.99 ft-lbs)</string>
+    <string name="attribution" translatable="false">Based on the DOS and Java Script Recoil Calculators from Varmint Al\'s Shooting Page.</string>
+    <string name="enjoyable">Enjoyable (0 – 9.99 ft-lbs)</string>
+    <string name="comfortable">Comfortable (10 – 19.99 ft-lbs)</string>
+    <string name="uncomfortable">Uncomfortable (20 – 29.99 ft-lbs)</string>
+    <string name="rather_not">I\'d Rather Not (30 – 49.99 ft-lbs)</string>
     <string name="medic">Call a Medic! (50+ ft-lbs)</string>
-    <string name="enjoyable_new_shooter">Enjoyable (0 - 4.99 ft-lbs)</string>
-    <string name="comfortable_new_shooter">Comfortable (5 - 9.99 ft-lbs)</string>
-    <string name="uncomfortable_new_shooter">Uncomfortable (10 - 14.99 ft-lbs)</string>
-    <string name="rather_not_new_shooter">I\'d Rather Not (15 - 24.99 ft-lbs)</string>
+    <string name="enjoyable_new_shooter">Enjoyable (0 – 4.99 ft-lbs)</string>
+    <string name="comfortable_new_shooter">Comfortable (5 – 9.99 ft-lbs)</string>
+    <string name="uncomfortable_new_shooter">Uncomfortable (10 – 14.99 ft-lbs)</string>
+    <string name="rather_not_new_shooter">I\'d Rather Not (15 – 24.99 ft-lbs)</string>
     <string name="medic_new_shooter">Call a Medic! (25+ ft-lbs)</string>
-    <string name="dialog_disclaimer">The values used for Comfort Level are based on an \'average\' shooter... whatever average means. They are meant as a baseline for comfort level.</string>
+    <string name="dialog_disclaimer">The values used for Comfort Level are based on an \'average\' shooter… whatever average means. They are meant as a baseline for comfort level.</string>
     <string name="dismiss">Dismiss</string>
     <string name="disclaimer">Disclaimer</string>
 </resources>
