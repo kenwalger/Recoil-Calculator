@@ -6,6 +6,9 @@ import org.junit.Test
 
 class CalculationsKtTest {
 
+    val muzzleBrakeReductionValue = .45
+    val silencerReductionValue = .25
+
     @Test
     fun calRecoilEnergyFromVarmintAls() {
         /*
@@ -80,5 +83,51 @@ class CalculationsKtTest {
         val result = calBulletSpinEnergy(diameter = .243, mass = 100, velocity = 2900, twist = 10).toFloat()
 
         assertEquals(5.44f, result,  0.005f)
+    }
+
+    @Test
+    fun calMuzzleBrakeReduction() {
+
+        val rifleWeight = 8.0
+        val bulletWeight = 100
+        val powderWeight = 42.0
+        val bulletVelocity = 2900
+
+        // Call the function
+        val result: Float = calRecoilEnergy(
+            rifleWeightPounds = rifleWeight,
+            bulletWeightGrains = bulletWeight,
+            powderWeightGrains = powderWeight,
+            bulletVelocity = bulletVelocity
+        ).toFloat()
+
+        val muzzleReduction = result - (result * muzzleBrakeReductionValue).toFloat()
+
+        // Check the result
+        assertEquals( 6.30f, muzzleReduction, 0.005f)
+
+    }
+
+    @Test
+    fun calSilencerReduction() {
+
+        val rifleWeight = 8.0
+        val bulletWeight = 100
+        val powderWeight = 42.0
+        val bulletVelocity = 2900
+
+        // Call the function
+        val result: Float = calRecoilEnergy(
+            rifleWeightPounds = rifleWeight,
+            bulletWeightGrains = bulletWeight,
+            powderWeightGrains = powderWeight,
+            bulletVelocity = bulletVelocity
+        ).toFloat()
+
+        val silencerReduction = result - (result * silencerReductionValue).toFloat()
+
+        // Check the result
+        assertEquals( 7.61f, silencerReduction, 0.005f)
+
     }
 }

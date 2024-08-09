@@ -45,7 +45,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -158,9 +157,9 @@ fun GetInput(modifier: Modifier = Modifier) {
     val silencerReductionValue = .25
 
     if (muzzleDeviceValue.value == "Brake") {
-        recoilEnergy = recoilEnergy - (recoilEnergy * muzzleBrakeReductionValue)
+        recoilEnergy -= (recoilEnergy * muzzleBrakeReductionValue)
     } else if (muzzleDeviceValue.value == "Silencer") {
-        recoilEnergy = recoilEnergy - (recoilEnergy * silencerReductionValue)
+        recoilEnergy -= (recoilEnergy * silencerReductionValue)
     }
 
     // Sizes & fonts
@@ -882,41 +881,6 @@ fun Header(modifier: Modifier = Modifier) {
             }
         }
     }
-}
-
-// Muzzle Device Menu
-@Composable
-fun muzzleDeviceMenu(): String {
-
-    val muzzleDeviceOptionList = listOf("None", "Brake", "Silencer")
-    val expanded = remember { mutableStateOf(false) }
-    val muzzleDeviceValue = remember { mutableStateOf(muzzleDeviceOptionList[0]) }
-
-    Surface(modifier = Modifier.fillMaxSize()) {
-
-        Box(modifier = Modifier.fillMaxWidth()) {
-
-            Row(modifier = Modifier
-                .clickable { expanded.value = !expanded.value }
-                .align(Alignment.Center)) {
-                Text(text = muzzleDeviceValue.value)
-                Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null)
-
-                DropdownMenu(expanded = expanded.value, onDismissRequest = {
-                    expanded.value = false
-                }) {
-                    muzzleDeviceOptionList.forEach {
-                        DropdownMenuItem(text = { Text(text = it) }, onClick = {
-                            muzzleDeviceValue.value = it
-                            expanded.value = false
-                        })
-                    }
-                }
-            }
-        }
-    }
-
-    return muzzleDeviceValue.value
 }
 
 
